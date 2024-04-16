@@ -1,7 +1,5 @@
 package it.uniroma3.diadia;
 
-import java.util.Scanner;
-
 import it.uniroma3.diadia.ambienti.Stanza;
 import it.uniroma3.diadia.attrezzi.Attrezzo;
 
@@ -32,22 +30,18 @@ public class DiaDia {
 	private Partita partita;
 	private IOConsole interfaccia;
 
-	private DiaDia () {
-		this.partita = new Partita(); // creo partita
-	}
-	
 	public DiaDia(IOConsole interfaccia) {
 		this.partita = new Partita(); // creo partita
-		this.interfaccia=interfaccia;
+		this.interfaccia = interfaccia;
 	}
 
 	// messaggio che va avanti ogni volta
 	public void gioca() {
 		String istruzione;
-		//Scanner scannerDiLinee;
+		// Scanner scannerDiLinee;
 
 		interfaccia.mostraMessaggio(MESSAGGIO_BENVENUTO);
-		//scannerDiLinee = new Scanner(interfaccia.leggiRiga());
+		// scannerDiLinee = new Scanner(interfaccia.leggiRiga());
 		do
 			istruzione = interfaccia.leggiRiga();
 		while (!processaIstruzione(istruzione) && this.partita.getGiocatore().getCfu() > 0);
@@ -76,31 +70,15 @@ public class DiaDia {
 			this.aiuto();
 			break;
 		case "prendi":
-			if (this.prendi(comandoDaEseguire.getParametro()))
-				interfaccia.mostraMessaggio(comandoDaEseguire.getParametro() + " è nella tua borsa");
-			else
-				interfaccia.mostraMessaggio("Oggetto non è nella stanza");
+			this.prendi(comandoDaEseguire.getParametro());
 			break;
 		case "posa":
-			if (this.posa(comandoDaEseguire.getParametro()))
-				interfaccia.mostraMessaggio(comandoDaEseguire.getParametro() + " posato nella stanza");
-			else
-				interfaccia.mostraMessaggio("Oggetto non è nella tua borsa");
+			this.posa(comandoDaEseguire.getParametro());
 			break;
 		default:
 			interfaccia.mostraMessaggio("Comando sconosciuto");
 			break;
 		}
-
-//		if (comandoDaEseguire.getNome().equals("fine")) {
-//			this.fine();
-//			return true;
-//		} else if (comandoDaEseguire.getNome().equals("vai"))
-//			this.vai(comandoDaEseguire.getParametro());
-//		else if (comandoDaEseguire.getNome().equals("aiuto")) // print array comandi
-//			this.aiuto();
-//		else
-//			interfaccia.mostraMessaggio("Comando sconosciuto");
 		if (this.partita.vinta()) {
 			interfaccia.mostraMessaggio("Hai vinto!");
 			return true;
@@ -118,7 +96,7 @@ public class DiaDia {
 	 */
 	private void aiuto() {
 		for (int i = 0; i < elencoComandi.length; i++)
-			interfaccia.mostraMessaggio(elencoComandi[i] + " ");
+			System.out.print(elencoComandi[i] + " ");
 		interfaccia.mostraMessaggio("");
 	}
 
@@ -140,7 +118,8 @@ public class DiaDia {
 			int cfu = this.partita.getGiocatore().getCfu();
 			this.partita.getGiocatore().setCfu(--cfu);
 		}
-		interfaccia.mostraMessaggio(partita.getStanzaCorrente().getDescrizione() + "\nCFU:" + partita.getGiocatore().getCfu());
+		interfaccia.mostraMessaggio(
+				partita.getStanzaCorrente().getDescrizione() + "\nCFU:" + partita.getGiocatore().getCfu());
 	}
 
 	/**
@@ -150,32 +129,41 @@ public class DiaDia {
 		interfaccia.mostraMessaggio("Grazie di aver giocato!"); // si desidera smettere
 	}
 
-//USO REMOATTREZZO CHE RESTITUISCE UN BOOLEAN
-	public boolean prendi(String nomeAttrezzo) {
-//verifico che ho l'attrezzo nella stanza
-		if (!partita.getStanzaCorrente().hasAttrezzo(nomeAttrezzo))
-			return false;
-		Attrezzo a = partita.getStanzaCorrente().getAttrezzo(nomeAttrezzo); // me lo salvo
-
-		if (partita.getStanzaCorrente().removeAttrezzo(a)) {
-			partita.getGiocatore().getBorsa().addAttrezzo(a); // lo aggiungo alla borsa
-			return true;
+	private void prendi(String nomeAttrezzo) {
+		if (nomeAttrezzo == null)
+			this.interfaccia.mostraMessaggio("Cosa vuoi prendere?");
+		else {
+			if (this.partita.getStanzaCorrente().hasAttrezzo(nomeAttrezzo)) {
+				Attrezzo a = partita.getStanzaCorrente().getAttrezzo(nomeAttrezzo);
+				if (partita.getGiocatore().getBorsa().addAttrezzo(a)) {// se lo aggiungo alla borsa lo rimuovo dalla stanza														
+					partita.getStanzaCorrente().removeAttrezzo(a);
+					this.interfaccia.mostraMessaggio(nomeAttrezzo + " aggiunto alla borsa");
+				} else
+					this.interfaccia.mostraMessaggio("Borsa piena");
+			} else
+				this.interfaccia.mostraMessaggio(nomeAttrezzo + " assente nella stanza");
 		}
-		return false;
+		this.interfaccia.mostraMessaggio(this.partita.getGiocatore().getBorsa().toString());
 	}
 
-//USO REMOATTREZZO CHE RESTITUISCE UN ATTREZZO
-	public boolean posa(String nomeAttrezzo) {
-//verifico che ho l'attrezzo in borsa
-		if (!partita.getGiocatore().getBorsa().hasAttrezzo(nomeAttrezzo))
-			return false;
+	private void posa(String nomeAttrezzo) {
 
-		Attrezzo a = partita.getGiocatore().getBorsa().removeAttrezzo(nomeAttrezzo); // me lo salvo
+		if (nomeAttrezzo == null)
+			this.interfaccia.mostraMessaggio("Nulla da posare");
+		else {
+			if (!partita.getGiocatore().getBorsa().hasAttrezzo(nomeAttrezzo))
+				this.interfaccia.mostraMessaggio("Attrezzo non presenta nella borsa per posarlo");
+			else {
+				Attrezzo a = partita.getGiocatore().getBorsa().getAttrezzo(nomeAttrezzo);
 
-		partita.getStanzaCorrente().addAttrezzo(a); // lo aggiungo alla stanza
-
-		return true;
-
+				if (partita.getStanzaCorrente().addAttrezzo(a)) { // se posso aggiunge lo rimuovo
+					partita.getGiocatore().getBorsa().removeAttrezzo(nomeAttrezzo);
+					this.interfaccia.mostraMessaggio(nomeAttrezzo + " posato nella " + partita.getStanzaCorrente());
+				} else
+					this.interfaccia.mostraMessaggio("Non è stato possibile aggiungere l'attrezzo");
+			}
+		}
+		this.interfaccia.mostraMessaggio(this.partita.getStanzaCorrente().getDescrizione()); // STAMPO LA STANZA
 	}
 
 	public static void main(String[] argc) {

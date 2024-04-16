@@ -192,8 +192,8 @@ public class Stanza {
 		for (Attrezzo rimuovo : attrezzi) {
 			if (rimuovo != null) {
 				if (rimuovo.getNome().equals(attrezzo.getNome())) {
-					this.attrezzi[i] = null;
-					this.numeroAttrezzi--;
+					this.attrezzi[i] = this.attrezzi[--this.numeroAttrezzi];
+					this.attrezzi[this.numeroAttrezzi] = null;
 					return true; // importante
 				}
 			}

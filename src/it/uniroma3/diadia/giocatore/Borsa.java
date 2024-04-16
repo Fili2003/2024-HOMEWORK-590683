@@ -34,7 +34,7 @@ public class Borsa {
 	public int getPesoMax() {
 		return pesoMax;
 	}
-
+	
 	public Attrezzo getAttrezzo(String nomeAttrezzo) {
 		Attrezzo a = null;
 		for (int i = 0; i < this.numeroAttrezzi; i++)
@@ -68,8 +68,8 @@ public class Borsa {
 			if (attrezzo != null) {
 				if (attrezzo.getNome().equals(nomeAttrezzo)) {
 					a = attrezzo;
-					this.attrezzi[i] = null; // per rimuovere l'attrezzo metto uguale a null
-					this.numeroAttrezzi--;
+					this.attrezzi[i] = this.attrezzi[--this.numeroAttrezzi]; 
+					this.attrezzi[this.numeroAttrezzi]= null;
 				}
 			}
 			i++;
