@@ -2,6 +2,9 @@ package it.uniroma3.diadia;
 
 import it.uniroma3.diadia.ambienti.Stanza;
 import it.uniroma3.diadia.attrezzi.Attrezzo;
+import it.uniroma3.diadia.comandi.Comando;
+import it.uniroma3.diadia.comandi.FabbricaDiComandi;
+import it.uniroma3.diadia.comandi.FabbricaDiComandiFisarmonica;
 
 /**
  * Classe principale di diadia, un semplice gioco di ruolo ambientato al dia.
@@ -25,25 +28,26 @@ public class DiaDia {
 			+ "o regalarli se pensi che possano ingraziarti qualcuno.\n\n"
 			+ "Per conoscere le istruzioni usa il comando 'aiuto'.";
 
-	static final private String[] elencoComandi = { "vai", "aiuto", "prendi <attrezzo>", "posa <attrezzo>", "fine" };
+	public static final String[] elencoComandi = { "vai", "aiuto", "prendi <attrezzo>", "posa <attrezzo>","guarda ","fine"};
+
 
 	private Partita partita;
-	private IOConsole interfaccia;
+	private IO interfaccia;
 
-	public DiaDia(IOConsole interfaccia) {
+	public DiaDia(IO interfaccia) { 
 		this.partita = new Partita(); // creo partita
 		this.interfaccia = interfaccia;
+		
 	}
 
-	// messaggio che va avanti ogni volta
 	public void gioca() {
 		String istruzione;
 		// Scanner scannerDiLinee;
 
-		interfaccia.mostraMessaggio(MESSAGGIO_BENVENUTO);
-		// scannerDiLinee = new Scanner(interfaccia.leggiRiga());
+		this.interfaccia.mostraMessaggio(MESSAGGIO_BENVENUTO);
+
 		do
-			istruzione = interfaccia.leggiRiga();
+			istruzione = this.interfaccia.leggiRiga();
 		while (!processaIstruzione(istruzione) && this.partita.getGiocatore().getCfu() > 0);
 		// scannerDiLinee.close();
 	}
@@ -55,120 +59,24 @@ public class DiaDia {
 	 *         altrimenti
 	 */
 	private boolean processaIstruzione(String istruzione) {
-		if (istruzione.isBlank())
-			return false; // per risolvere problema del di invio senza scrivere niente
-		Comando comandoDaEseguire = new Comando(istruzione);
+		Comando comandoDaEseguire;
+		FabbricaDiComandi factory = new FabbricaDiComandiFisarmonica();
+		comandoDaEseguire = factory.costruisciComando(istruzione);
+		comandoDaEseguire.esegui(this.partita);
+		if (this.partita.vinta())
 
-		switch (comandoDaEseguire.getNome()) {
-		case "fine":
-			this.fine();
-			return true;
-		case "vai":
-			this.vai(comandoDaEseguire.getParametro());
-			break;
-		case "aiuto":
-			this.aiuto();
-			break;
-		case "prendi":
-			this.prendi(comandoDaEseguire.getParametro());
-			break;
-		case "posa":
-			this.posa(comandoDaEseguire.getParametro());
-			break;
-		default:
-			interfaccia.mostraMessaggio("Comando sconosciuto");
-			break;
-		}
-		if (this.partita.vinta()) {
-			interfaccia.mostraMessaggio("Hai vinto!");
-			return true;
-		} else {
-			if (this.partita.isFinita())
-				interfaccia.mostraMessaggio("Hai perso chicco troppe mosse usate!! RIPROVA");
-			return false;
-		}
+			this.interfaccia.mostraMessaggio("Hai vinto!");
+		if (!this.partita.giocatoreIsVivo())
+
+			this.interfaccia.mostraMessaggio("Hai esaurito i CFU...");
+
+		return this.partita.isFinita();
 	}
 
-	// implementazioni dei comandi dell'utente:
-
-	/**
-	 * Stampa informazioni di aiuto.
-	 */
-	private void aiuto() {
-		for (int i = 0; i < elencoComandi.length; i++)
-			System.out.print(elencoComandi[i] + " ");
-		interfaccia.mostraMessaggio("");
-	}
-
-	/**
-	 * Cerca di andare in una direzione. Se c'e' una stanza ci entra e ne stampa il
-	 * nome, altrimenti stampa un messaggio di errore
-	 */
-	private void vai(String direzione) {
-		if (direzione == null)
-			interfaccia.mostraMessaggio("Dove vuoi andare ?");
-		Stanza prossimaStanza = null; // inizializza a null la prossima stanza
-		prossimaStanza = this.partita.getStanzaCorrente().getStanzaAdiacente(direzione);
-		if (prossimaStanza == null)
-			interfaccia.mostraMessaggio("Direzione inesistente");
-		else {
-			// cfu diminuiscono ogni volta che mi muovo in una stanza in teoria i cfu
-			// iniziali sono 20 quindi al massimo potrei fare 20 mosse
-			this.partita.setStanzaCorrente(prossimaStanza);
-			int cfu = this.partita.getGiocatore().getCfu();
-			this.partita.getGiocatore().setCfu(--cfu);
-		}
-		interfaccia.mostraMessaggio(
-				partita.getStanzaCorrente().getDescrizione() + "\nCFU:" + partita.getGiocatore().getCfu());
-	}
-
-	/**
-	 * Comando "Fine".
-	 */
-	private void fine() {
-		interfaccia.mostraMessaggio("Grazie di aver giocato!"); // si desidera smettere
-	}
-
-	private void prendi(String nomeAttrezzo) {
-		if (nomeAttrezzo == null)
-			this.interfaccia.mostraMessaggio("Cosa vuoi prendere?");
-		else {
-			if (this.partita.getStanzaCorrente().hasAttrezzo(nomeAttrezzo)) {
-				Attrezzo a = partita.getStanzaCorrente().getAttrezzo(nomeAttrezzo);
-				if (partita.getGiocatore().getBorsa().addAttrezzo(a)) {// se lo aggiungo alla borsa lo rimuovo dalla stanza														
-					partita.getStanzaCorrente().removeAttrezzo(a);
-					this.interfaccia.mostraMessaggio(nomeAttrezzo + " aggiunto alla borsa");
-				} else
-					this.interfaccia.mostraMessaggio("Borsa piena");
-			} else
-				this.interfaccia.mostraMessaggio(nomeAttrezzo + " assente nella stanza");
-		}
-		this.interfaccia.mostraMessaggio(this.partita.getGiocatore().getBorsa().toString());
-	}
-
-	private void posa(String nomeAttrezzo) {
-
-		if (nomeAttrezzo == null)
-			this.interfaccia.mostraMessaggio("Nulla da posare");
-		else {
-			if (!partita.getGiocatore().getBorsa().hasAttrezzo(nomeAttrezzo))
-				this.interfaccia.mostraMessaggio("Attrezzo non presenta nella borsa per posarlo");
-			else {
-				Attrezzo a = partita.getGiocatore().getBorsa().getAttrezzo(nomeAttrezzo);
-
-				if (partita.getStanzaCorrente().addAttrezzo(a)) { // se posso aggiunge lo rimuovo
-					partita.getGiocatore().getBorsa().removeAttrezzo(nomeAttrezzo);
-					this.interfaccia.mostraMessaggio(nomeAttrezzo + " posato nella " + partita.getStanzaCorrente());
-				} else
-					this.interfaccia.mostraMessaggio("Non è stato possibile aggiungere l'attrezzo");
-			}
-		}
-		this.interfaccia.mostraMessaggio(this.partita.getStanzaCorrente().getDescrizione()); // STAMPO LA STANZA
-	}
 
 	public static void main(String[] argc) {
-		IOConsole interfaccia = new IOConsole();
-		DiaDia gioco = new DiaDia(interfaccia);
+		IO io = new IOConsole();
+		DiaDia gioco = new DiaDia(io);
 		gioco.gioca();
 	}
 }
