@@ -19,7 +19,7 @@ public class BorsaTest {
 		this.borsa2 = new Borsa();
 		this.attrezzo = new Attrezzo("coltello", 1);
 		borsa2.addAttrezzo(attrezzo);
-
+ 
 	}
 
 //TEST GETPESO

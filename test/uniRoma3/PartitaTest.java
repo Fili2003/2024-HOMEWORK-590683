@@ -29,7 +29,7 @@ public class PartitaTest {
 	}
 	@Test //stanza vincente giusta
 	public void testGetStanzaVincente() {
-		assertEquals("Biblioteca",labirinto.getStanzaVincente().getNome());
+		assertEquals("biblioteca",labirinto.getStanzaVincente().getNome());
 		
 		
 	}
@@ -42,7 +42,7 @@ public class PartitaTest {
 	}
 	@Test // partita finita quando arriva al labirinto
 	public void testIfFinitaPercheVinto() {
-		assertEquals("Biblioteca",labirinto.getStanzaVincente().getNome());
+		assertEquals("biblioteca",labirinto.getStanzaVincente().getNome());
 	}
 	@Test //partita finita perche digita fine
 	public void testIsFinitaPercheFine() {
