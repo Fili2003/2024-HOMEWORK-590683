@@ -12,7 +12,7 @@ public class IOConsole implements IO {
 	@Override
 	public String leggiRiga() {
 		Scanner scannerDiLinee = new Scanner(System.in);
-		String riga = scannerDiLinee.nextLine(); 
+		String riga = scannerDiLinee.nextLine();
 		// scannerDiLinee.close();
 		return riga;
 	}

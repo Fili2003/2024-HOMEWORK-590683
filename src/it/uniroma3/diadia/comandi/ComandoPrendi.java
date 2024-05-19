@@ -17,7 +17,7 @@ public class ComandoPrendi implements Comando {
 	@Override
 	public void esegui(Partita partita) {
 		if (partita == null)
-			return; 
+			return;
 		if (nomeAttrezzo == null)
 			this.interfaccia.mostraMessaggio("Cosa vuoi prendere?");
 		else {

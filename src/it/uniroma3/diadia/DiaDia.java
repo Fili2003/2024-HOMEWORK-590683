@@ -1,7 +1,7 @@
 package it.uniroma3.diadia;
 
-import it.uniroma3.diadia.ambienti.Stanza;
-import it.uniroma3.diadia.attrezzi.Attrezzo;
+import it.uniroma3.diadia.ambienti.LabirintoBuilder;
+import it.uniroma3.diadia.ambienti.labirinto;
 import it.uniroma3.diadia.comandi.Comando;
 import it.uniroma3.diadia.comandi.FabbricaDiComandi;
 import it.uniroma3.diadia.comandi.FabbricaDiComandiFisarmonica;
@@ -28,16 +28,16 @@ public class DiaDia {
 			+ "o regalarli se pensi che possano ingraziarti qualcuno.\n\n"
 			+ "Per conoscere le istruzioni usa il comando 'aiuto'.";
 
-	public static final String[] elencoComandi = { "vai", "aiuto", "prendi <attrezzo>", "posa <attrezzo>","guarda ","fine"};
-
+	public static final String[] elencoComandi = { "vai", "aiuto", "prendi <attrezzo>", "posa <attrezzo>", "guarda ",
+			"fine" };
 
 	private Partita partita;
 	private IO interfaccia;
 
-	public DiaDia(IO interfaccia) { 
-		this.partita = new Partita(); // creo partita
+	public DiaDia(IO interfaccia, labirinto labirinto) {
+		this.partita = new Partita(labirinto); // creo partita
 		this.interfaccia = interfaccia;
-		
+
 	}
 
 	public void gioca() {
@@ -49,7 +49,6 @@ public class DiaDia {
 		do
 			istruzione = this.interfaccia.leggiRiga();
 		while (!processaIstruzione(istruzione) && this.partita.getGiocatore().getCfu() > 0);
-		// scannerDiLinee.close();
 	}
 
 	/**
@@ -61,7 +60,7 @@ public class DiaDia {
 	private boolean processaIstruzione(String istruzione) {
 		Comando comandoDaEseguire;
 		FabbricaDiComandi factory = new FabbricaDiComandiFisarmonica();
-		comandoDaEseguire = factory.costruisciComando(istruzione);
+		comandoDaEseguire = factory.costruisciComando(istruzione, interfaccia);
 		comandoDaEseguire.esegui(this.partita);
 		if (this.partita.vinta())
 
@@ -73,10 +72,12 @@ public class DiaDia {
 		return this.partita.isFinita();
 	}
 
-
 	public static void main(String[] argc) {
 		IO io = new IOConsole();
-		DiaDia gioco = new DiaDia(io);
+		labirinto labirinto = new LabirintoBuilder().addStanzaIniziale("Laboratorio Campus")
+				.addStanzaVincente("Biblioteca").addAdiacenza("Laboratorio Campus", "Biblioteca", "ovest")
+				.getLabirinto();
+		DiaDia gioco = new DiaDia(io, labirinto);
 		gioco.gioca();
 	}
 }

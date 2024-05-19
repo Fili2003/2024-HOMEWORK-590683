@@ -15,9 +15,9 @@ public class ComandoGuarda implements Comando {
 	
 	@Override
 	public void esegui(Partita partita) {
-		this.interfaccia.mostraMessaggio("Informazioni della stanza:\n" +partita.getStanzaCorrente().getDescrizione());
+		this.interfaccia.mostraMessaggio("\nTi trovi nella stanza: " +partita.getStanzaCorrente().getDescrizione());
 		this.interfaccia.mostraMessaggio("Nella borsa hai:" +partita.getGiocatore().getBorsa().toString());
-		this.interfaccia.mostraMessaggio("Cfu rimanenenti:" +partita.getGiocatore().getCfu());
+		this.interfaccia.mostraMessaggio("Cfu rimanenenti:" +partita.getGiocatore().getCfu()); 
 	}
 
 	@Override
@@ -27,7 +27,6 @@ public class ComandoGuarda implements Comando {
 
 	@Override
 	public String getParametro() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

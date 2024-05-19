@@ -1,6 +1,5 @@
 package it.uniroma3.diadia.ambienti;
 
-import it.uniroma3.diadia.IO;
 
 public class StanzaBuia extends Stanza {
 	
@@ -9,6 +8,9 @@ public class StanzaBuia extends Stanza {
 	public StanzaBuia(String nome,String attrezzoLuminoso) {
 		super(nome);
 		this.attrezzoLuminoso=attrezzoLuminoso;
+	}
+	public String getAttrezzoIlluminante() {
+		return this.attrezzoLuminoso;
 	}
 	
 	@Override
@@ -19,7 +21,17 @@ public class StanzaBuia extends Stanza {
 		
 		return super.getDescrizione();
 	}
-
+	@Override
+	public int hashCode() {
+		return this.getClass().hashCode()+super.hashCode()+ this.attrezzoLuminoso.hashCode();
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null || obj.getClass() != this.getClass()) 
+			return false;
+		StanzaBuia that = (StanzaBuia) obj;
+		return super.equals((Stanza)that) && this.attrezzoLuminoso.equals(that.attrezzoLuminoso);
+	}
 
 
 

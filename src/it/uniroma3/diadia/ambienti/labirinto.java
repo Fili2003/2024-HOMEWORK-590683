@@ -30,7 +30,7 @@ public class labirinto {
 				Stanza aulaN11 = new Stanza("Aula N11");
 				Stanza aulaN10 = new Stanza("Aula N10");
 				Stanza laboratorio = new Stanza("Laboratorio Campus");
-				Stanza biblioteca = new Stanza(labirinto.bilbioteca);
+				Stanza biblioteca = new Stanza("Biblioteca"); 
 				
 				/* collega le stanze */
 				atrio.impostaStanzaAdiacente("nord", biblioteca);
@@ -61,6 +61,15 @@ public class labirinto {
 			public Stanza getStanzaIniziale() {
 				return stanzaIniziale;
 			}
+
+			public void setStanzaIniziale(Stanza stanzaIniziale) {
+				this.stanzaIniziale = stanzaIniziale;
+			}
+
+			public void setStanzaVincente(Stanza stanzaVincente) {
+				this.stanzaVincente = stanzaVincente;
+			}
+			
 
 	
 }

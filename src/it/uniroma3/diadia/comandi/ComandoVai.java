@@ -32,11 +32,17 @@ public class ComandoVai implements Comando {
 		partita.setStanzaCorrente(prossimaStanza); // Aggiorno la stanza corrente essendomi spostato
 		int cfu = partita.getGiocatore().getCfu();
 		partita.getGiocatore().setCfu(--cfu); // Invece qua prima decremento quindi aggiorno quindi modifico
+		
+		FabbricaDiComandiFisarmonica factory = new FabbricaDiComandiFisarmonica();
+		Comando comandoGuarda = factory.costruisciComando("guarda", interfaccia);
+		comandoGuarda.esegui(partita);
+		
+		
 	}
 
 	@Override
 	public void setParametro(String parametro) {
-		this.direzione = parametro;
+		this.direzione = parametro; 
 	}
 
 	@Override

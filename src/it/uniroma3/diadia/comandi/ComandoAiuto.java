@@ -9,15 +9,16 @@ public class ComandoAiuto implements Comando{
 	private IO interfaccia;
 	private String nome;
 
-	public ComandoAiuto(IO interfaccia) {
+	public ComandoAiuto(IO interfaccia, String nome) {
 		this.interfaccia=interfaccia;
+		this.nome=nome;
 	}
 	
 	@Override 
 	public void esegui(Partita partita) {
 		for (int i = 0; i < DiaDia.elencoComandi.length; i++)
 			this.interfaccia.mostraMessaggio(DiaDia.elencoComandi[i] + " ");
-		this.interfaccia.mostraMessaggio("");
+		this.interfaccia.mostraMessaggio(""); 
 	}
 
 	@Override

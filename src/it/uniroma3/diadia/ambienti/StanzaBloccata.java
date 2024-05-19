@@ -22,8 +22,20 @@ public class StanzaBloccata extends Stanza {
 	@Override 
 	public String getDescrizione() {
 		if(!hasAttrezzo(attrezzoSblocca))
-			return("Se non è presente l'attrezzo" + attrezzoSblocca + "nella stanza essa è bloccata");
+			return("Se non è presente l'attrezzo " + attrezzoSblocca + " nella stanza essa è bloccata");
 		return super.getDescrizione();
 	}
-
+	@Override
+	public int hashCode() {
+		return this.getClass().hashCode()+ super.hashCode()+this.attrezzoSblocca.hashCode()+this.direzioneBlocked.hashCode();
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null || obj.getClass() != this.getClass()) 
+			return false;
+		StanzaBloccata that = (StanzaBloccata) obj;
+		return super.equals((Stanza)that) && 
+				this.attrezzoSblocca.equals(that.attrezzoSblocca) && 
+				this.direzioneBlocked.equals(that.direzioneBlocked);
+	}
 }
