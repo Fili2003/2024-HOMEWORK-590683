@@ -5,17 +5,16 @@ import java.util.Scanner;
 import it.uniroma3.diadia.IO;
 
 public class FabbricaDiComandiFisarmonica implements FabbricaDiComandi {
-	
 
 	@Override
-	public Comando costruisciComando (String istruzione,IO interfaccia) {
+	public abstractComando costruisciComando (String istruzione,IO interfaccia) {
 		Scanner scannerDiParole = new Scanner(istruzione);
 		String nomeComando = null;
 		String parametro = null;
-		Comando comando = null;
+		abstractComando comando = null;
 		if (scannerDiParole.hasNext())
 			nomeComando = scannerDiParole.next();// prima parola: nome del comando
-		if (scannerDiParole.hasNext())
+			if (scannerDiParole.hasNext())
 			parametro = scannerDiParole.next(); // seconda parola: eventuale param. 
 
 		

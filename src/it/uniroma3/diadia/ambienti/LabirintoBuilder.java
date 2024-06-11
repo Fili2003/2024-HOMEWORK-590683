@@ -52,7 +52,7 @@ public class LabirintoBuilder extends labirinto {
 		return this;
 	}
 
-	public LabirintoBuilder addAdiacenza(String stanzaCorrente, String stanzaAdiacente, String direzione) {
+	public LabirintoBuilder addAdiacenza(String stanzaCorrente, String stanzaAdiacente, Direzione direzione) {
 		if (stanze.get(stanzaCorrente) != null && stanze.get(stanzaAdiacente) != null) {
 			Stanza s1 = stanze.get(stanzaCorrente);
 			Stanza s2 = stanze.get(stanzaAdiacente);
@@ -79,7 +79,7 @@ public class LabirintoBuilder extends labirinto {
 		return this;
 	}
 
-	public LabirintoBuilder addStanzaBloccata(String nomeStanza, String direzioneBloccata, String attrezzoSblocca) {
+	public LabirintoBuilder addStanzaBloccata(String nomeStanza, Direzione direzioneBloccata, String attrezzoSblocca) {
 		if (nomeStanza != null && direzioneBloccata != null && attrezzoSblocca != null) {
 			Stanza stanzaBloccata = new StanzaBloccata(nomeStanza, direzioneBloccata, attrezzoSblocca);
 			stanze.put(nomeStanza, stanzaBloccata);

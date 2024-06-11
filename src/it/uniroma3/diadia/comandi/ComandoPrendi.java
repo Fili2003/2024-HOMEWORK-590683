@@ -4,7 +4,7 @@ import it.uniroma3.diadia.IO;
 import it.uniroma3.diadia.Partita;
 import it.uniroma3.diadia.attrezzi.Attrezzo;
 
-public class ComandoPrendi implements Comando {
+public class ComandoPrendi extends abstractComando {
 	private IO interfaccia;
 	private String nomeAttrezzo;
 	private String nome;
@@ -14,7 +14,7 @@ public class ComandoPrendi implements Comando {
 		this.nome = nome;
 	}
 
-	@Override
+	
 	public void esegui(Partita partita) {
 		if (partita == null)
 			return;
@@ -35,17 +35,17 @@ public class ComandoPrendi implements Comando {
 		this.interfaccia.mostraMessaggio(partita.getGiocatore().getBorsa().toString());
 	}
 
-	@Override
+	
 	public void setParametro(String parametro) {
 		this.nomeAttrezzo = parametro;
 	}
 
-	@Override
+	
 	public String getParametro() {
 		return this.nomeAttrezzo;
 	}
 
-	@Override
+	
 	public String getNome() {
 		return nome;
 	}

@@ -2,16 +2,19 @@ package uniRoma3;
 
 import static org.junit.Assert.*;
 
+import java.util.Scanner;
+
 import org.junit.Before;
 import org.junit.Test;
 
 import it.uniroma3.diadia.IO;
 import it.uniroma3.diadia.IOConsole;
 import it.uniroma3.diadia.Partita;
+import it.uniroma3.diadia.ambienti.Direzione;
 import it.uniroma3.diadia.ambienti.LabirintoBuilder;
 import it.uniroma3.diadia.ambienti.StanzaBuia;
-import it.uniroma3.diadia.comandi.Comando;
-import it.uniroma3.diadia.comandi.FabbricaDiComandiFisarmonica;
+import it.uniroma3.diadia.comandi.FabbricaComandiRiflessiva;
+import it.uniroma3.diadia.comandi.abstractComando;
 import it.uniroma3.diadia.giocatore.Giocatore;
 
 public class partiteIntereTest {
@@ -19,26 +22,30 @@ public class partiteIntereTest {
 	private Partita partita;
 	private LabirintoBuilder labirinto;
 	private Giocatore giocatore;
-	private Comando comando;
+	private abstractComando comando;
 	private IO io;
-	private FabbricaDiComandiFisarmonica factory;
+	private FabbricaComandiRiflessiva factory;
+	private Scanner scanner;
 
 	@Before
 	public void setUp() {
 		this.labirinto = new LabirintoBuilder().addStanzaIniziale("ingresso").addAttrezzo("spada", 1)
 				.addStanzaVincente("uscita").addStanza("salone").addAttrezzo("cucchiaio", 1)
-				.addAdiacenza("ingresso", "salone", "nord").addAdiacenza("salone", "ingresso", "sud").addStanza("bagno")
-				.addAttrezzo("torcia", 1).addStanzaBuia("cameraDaLetto", "torcia").addAttrezzo("pass", 2)
-				.addAdiacenza("salone", "bagno", "ovest").addAdiacenza("bagno", "salone", "est")
-				.addAdiacenza("salone", "cameraDaLetto", "nord").addAdiacenza("cameraDaLetto", "salone", "sud")
-				.addStanzaMagica("studio", 0).addAttrezzo("penna", 1).addAdiacenza("studio", "cameraDaLetto", "ovest")
-				.addStanzaBloccata("bunker", "est", "pass").addAdiacenza("cameraDaLetto", "studio", "est")
-				.addAdiacenza("ingresso", "bunker", "est").addAdiacenza("bunker", "ingresso", "ovest")
-				.addAdiacenza("bunker", "uscita", "est").addAdiacenza("uscita", "bunker", "ovest").getLabirinto();
+				.addAdiacenza("ingresso", "salone", Direzione.nord).addAdiacenza("salone", "ingresso", Direzione.sud)
+				.addStanza("bagno").addAttrezzo("torcia", 1).addStanzaBuia("cameraDaLetto", "torcia")
+				.addAttrezzo("pass", 2).addAdiacenza("salone", "bagno", Direzione.ovest)
+				.addAdiacenza("bagno", "salone", Direzione.est).addAdiacenza("salone", "cameraDaLetto", Direzione.nord)
+				.addAdiacenza("cameraDaLetto", "salone", Direzione.sud).addStanzaMagica("studio", 0)
+				.addAttrezzo("penna", 1).addAdiacenza("studio", "cameraDaLetto", Direzione.ovest)
+				.addStanzaBloccata("bunker", Direzione.ovest, "pass")
+				.addAdiacenza("cameraDaLetto", "studio", Direzione.est)
+				.addAdiacenza("ingresso", "bunker", Direzione.est).addAdiacenza("bunker", "ingresso", Direzione.ovest)
+				.addAdiacenza("bunker", "uscita", Direzione.est).addAdiacenza("uscita", "bunker", Direzione.ovest)
+				.getLabirinto();
 		this.partita = new Partita(labirinto);
 		this.giocatore = partita.getGiocatore();
-		this.io = new IOConsole();
-		this.factory = new FabbricaDiComandiFisarmonica();
+		this.io = new IOConsole(scanner);
+		this.factory = new FabbricaComandiRiflessiva(io);
 	}
 
 	@Test
@@ -159,7 +166,7 @@ public class partiteIntereTest {
 		comando.esegui(partita);
 		assertEquals("bunker", partita.getStanzaCorrente().getNome());
 		assertEquals(11, partita.getGiocatore().getCfu());
-		assertEquals(partita.getStanzaCorrente(), partita.getStanzaCorrente().getStanzaAdiacente("est"));
+		assertEquals(partita.getStanzaCorrente(), partita.getStanzaCorrente().getStanzaAdiacente(Direzione.est));
 
 		this.comando = factory.costruisciComando("vai est", io);
 		comando.esegui(partita);
@@ -169,7 +176,8 @@ public class partiteIntereTest {
 		comando.esegui(partita);
 		assertTrue(partita.getStanzaCorrente().hasAttrezzo("pass"));
 		assertFalse(partita.getGiocatore().getBorsa().hasAttrezzo("pass"));
-		assertEquals(labirinto.getStanze().get("uscita"), partita.getStanzaCorrente().getStanzaAdiacente("est"));
+		assertEquals(labirinto.getStanze().get("uscita"),
+				partita.getStanzaCorrente().getStanzaAdiacente(Direzione.est));
 
 		this.comando = factory.costruisciComando("vai est", io);
 		comando.esegui(partita);
@@ -190,11 +198,11 @@ public class partiteIntereTest {
 		comando.esegui(partita);
 		assertEquals("ingresso", partita.getStanzaCorrente().getNome());
 		assertEquals(20, partita.getGiocatore().getCfu());
-		assertTrue(partita.getStanzaCorrente().getMapStanzeAdiacenti().containsKey("nord"));
+		assertTrue(partita.getStanzaCorrente().getMapStanzeAdiacenti().containsKey(Direzione.nord));
 
 		this.comando = factory.costruisciComando("vado nord", io);
 		comando.esegui(partita);
-		assertFalse(partita.getStanzaCorrente().getMapStanzeAdiacenti().containsKey("sud"));
+		assertFalse(partita.getStanzaCorrente().getMapStanzeAdiacenti().containsKey(Direzione.sud));
 		assertEquals("ingresso", partita.getStanzaCorrente().getNome());
 
 		this.comando = factory.costruisciComando("vai", io);

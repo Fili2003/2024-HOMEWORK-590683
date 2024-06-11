@@ -5,7 +5,9 @@ import java.util.Set;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import it.uniroma3.diadia.Proprietà;
 import it.uniroma3.diadia.attrezzi.Attrezzo;
+import it.uniroma3.diadia.personaggi.AbstractPersonaggio;
 
 /**
  * Classe Stanza - una stanza in un gioco di ruolo. Una stanza e' un luogo
@@ -19,14 +21,15 @@ import it.uniroma3.diadia.attrezzi.Attrezzo;
 
 public class Stanza {
 
-	static final private int NUMERO_MASSIMO_ATTREZZI = 10;
-	static final private int NUMERO_MASSIMO_DIREZIONI = 4;
-
+	static final private int NUMERO_MASSIMO_DIREZIONI = Proprietà.getDirezioniMax();
+	private static final int NUMERO_MASSIMO_ATTREZZI = Proprietà.getAttrezziMax();
 	private String nome;
 	private Map<String, Attrezzo> attrezzi;
-	private Map<String, Stanza> stanzeAdiacenti;
+	private Map<Direzione, Stanza> stanzeAdiacenti;
 	private int numeroAttrezzi;
-	private Set<String> direzioni;
+	private Set<Direzione> direzioni;
+	private AbstractPersonaggio personaggio;
+
 
 	/**
 	 * Crea una stanza. Non ci sono stanze adiacenti, non ci sono attrezzi.
@@ -36,8 +39,8 @@ public class Stanza {
 	public Stanza(String nome) {
 		this.nome = nome;
 		this.numeroAttrezzi = 0;
-		this.direzioni = new HashSet<>();
-		this.stanzeAdiacenti = new HashMap<String, Stanza>();
+		this.direzioni = new HashSet<Direzione>();
+		this.stanzeAdiacenti = new HashMap<Direzione, Stanza>();
 		this.attrezzi = new HashMap<String, Attrezzo>();
 	}
 
@@ -48,19 +51,19 @@ public class Stanza {
 	 * @param stanza    stanza adiacente nella direzione indicata dal primo
 	 *                  parametro.
 	 */
-	public void impostaStanzaAdiacente(String direzione, Stanza stanza) {
+	public void impostaStanzaAdiacente(Direzione direzione, Stanza stanza) {
 		if (this.stanzeAdiacenti.size() < NUMERO_MASSIMO_DIREZIONI) {
 			this.stanzeAdiacenti.put(direzione, stanza);
 			direzioni.add(direzione);
 		}
-	}
+	} 
 
 	/**
 	 * Restituisce la stanza adiacente nella direzione specificata
 	 * 
 	 * @param direzione
 	 */
-	public Stanza getStanzaAdiacente(String direzione) {
+	public Stanza getStanzaAdiacente(Direzione direzione) {
 		return this.stanzeAdiacenti.get(direzione);
 	}
 
@@ -161,11 +164,11 @@ public class Stanza {
 
 	}
 
-	public Set<String> getDirezioni() {
+	public Set<Direzione> getDirezioni() {
 		return this.stanzeAdiacenti.keySet();
 	}
 
-	public Map<String, Stanza> getMapStanzeAdiacenti() {
+	public Map<Direzione, Stanza> getMapStanzeAdiacenti() {
 		return this.stanzeAdiacenti;
 
 	}
@@ -183,5 +186,13 @@ public class Stanza {
 		Stanza that = (Stanza) obj;
 		return this.nome.equals(that.getNome()) && this.stanzeAdiacenti.equals(that.getMapStanzeAdiacenti())
 				&& this.attrezzi.equals(that.getAttrezzi());
+	}
+
+	public void setPersonaggio(AbstractPersonaggio personaggio) {
+		this.personaggio = personaggio;
+	}
+
+	public AbstractPersonaggio getPersonaggio() {
+		return this.personaggio;
 	}
 }

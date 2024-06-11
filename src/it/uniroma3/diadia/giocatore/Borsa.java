@@ -11,10 +11,11 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import it.uniroma3.diadia.Proprietà;
 import it.uniroma3.diadia.attrezzi.Attrezzo;
 
 public class Borsa {
-	public final static int DEFAULT_PESO_MAX_BORSA = 10;
+	public final static int DEFAULT_PESO_MAX_BORSA = Proprietà.getPesoMax();
 	private Map<String, Attrezzo> attrezzi;
 	private int pesoMax;
 
@@ -73,8 +74,8 @@ public class Borsa {
 		StringBuilder s = new StringBuilder();
 		if (!this.isEmpty()) {
 			s.append("Contenuto borsa (" + this.getPeso() + "kg/" + this.getPesoMax() + "kg): ");
-			
-			s.append(getContenutoOrdinatoPerNome().toString()+ " ");
+
+			s.append(getContenutoOrdinatoPerNome().toString() + " ");
 		} else
 			s.append("Borsa vuota");
 		return s.toString();
@@ -103,6 +104,7 @@ public class Borsa {
 		final comparatorePerPeso cmp = new comparatorePerPeso();
 		final SortedSet<Attrezzo> ordinatoPerPeso = new TreeSet<>(cmp);
 		ordinatoPerPeso.addAll(listaAttrezzi);
+
 		return ordinatoPerPeso;
 
 	}
@@ -117,12 +119,13 @@ public class Borsa {
 				final Set<Attrezzo> stessoPeso = peso2attrezzi.get(attrezzo.getPeso()); // ho il set di tutti gli
 																						// attrezzi visti prima con quel
 																						// peso
-				stessoPeso.add(attrezzo); // aggiungo oggetto nuovo al set
+				stessoPeso.add(attrezzo); // aggiungo oggetto al set
 			} else {
 				// questo attrezzo ha un peso mai visto prima
 				// creo un nuovo set per ospitare tutti gli attrezzi contenuri e futuri con
 				// questo peso
 				final Set<Attrezzo> nuovoSet = new HashSet<>();
+				nuovoSet.add(attrezzo);
 				peso2attrezzi.put(attrezzo.getPeso(), nuovoSet);
 			}
 		}

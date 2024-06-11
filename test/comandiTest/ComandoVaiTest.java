@@ -1,6 +1,9 @@
 package comandiTest;
 
 import static org.junit.Assert.*;
+
+import java.util.Scanner;
+
 import org.junit.*;
 import org.junit.Test;
 
@@ -17,12 +20,13 @@ public class ComandoVaiTest {
 	private Partita partita;
 	private IO io;
 	private labirinto labirinto;
+	private Scanner scanner;
 
 	
 	@Before
 	public void setUp() {
 		this.partita = new Partita(labirinto);
-		this.io = new IOConsole();
+		this.io = new IOConsole(scanner);
 		this.comando = new ComandoVai("vai",io);
 	}
 

@@ -2,6 +2,8 @@ package comandiTest;
 
 import static org.junit.Assert.*;
 
+import java.util.Scanner;
+
 import org.junit.Test;
 
 import it.uniroma3.diadia.IO;
@@ -20,10 +22,11 @@ public class ComandoPosaTest {
 	private Attrezzo a;
 	private IO io;
 	private labirinto labirinto;
+	private Scanner scanner;
 
 	@Before
 	public void setUp() {
-		this.io = new IOConsole();
+		this.io = new IOConsole(scanner);
 		this.partita = new Partita(labirinto);
 		this.posa = new ComandoPosa("posa", io);
 

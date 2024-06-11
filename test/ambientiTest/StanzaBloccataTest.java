@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import it.uniroma3.diadia.ambienti.Direzione;
 import it.uniroma3.diadia.ambienti.Stanza;
 import it.uniroma3.diadia.ambienti.StanzaBloccata;
 import it.uniroma3.diadia.attrezzi.Attrezzo;
@@ -18,7 +19,7 @@ public class StanzaBloccataTest {
 
 	@Before
 	public void setUp() {
-		this.blocked = new StanzaBloccata("bloccata", "nord", "chiave");
+		this.blocked = new StanzaBloccata("bloccata", Direzione.nord, "chiave");
 		this.sAd = new Stanza("sAdiacente");
 	}
 
@@ -26,19 +27,19 @@ public class StanzaBloccataTest {
 	public void testGetStanzaAdiacentSbloccata() {
 		this.attrezzo = new Attrezzo("chiave", 1);
 		blocked.addAttrezzo(attrezzo);
-		blocked.impostaStanzaAdiacente("nord", sAd);
-		assertEquals("sAdiacente", blocked.getStanzaAdiacente("nord").getNome());
+		blocked.impostaStanzaAdiacente(Direzione.nord, sAd);
+		assertEquals("sAdiacente", blocked.getStanzaAdiacente(Direzione.nord).getNome());
 	}
 
 	@Test
 	public void testGetStanzaAdiacentBloccata() {
-		blocked.impostaStanzaAdiacente("nord", sAd);
-		assertEquals(blocked, blocked.getStanzaAdiacente("nord"));
+		blocked.impostaStanzaAdiacente(Direzione.nord, sAd);
+		assertEquals(blocked, blocked.getStanzaAdiacente(Direzione.nord));
 	}
 
 	@Test
 	public void testGetDescrizioneStanzaBloccata() {
-		assertEquals("Se non è presente l'attrezzochiavenella stanza essa è bloccata", blocked.getDescrizione());
+		assertEquals("Se non è presente l'attrezzo chiave nella stanza essa è bloccata", blocked.getDescrizione());
 	}
 
 	@Test

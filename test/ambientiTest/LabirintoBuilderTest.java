@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 import org.junit.*;
 import org.junit.Test;
 
+import it.uniroma3.diadia.ambienti.Direzione;
 import it.uniroma3.diadia.ambienti.LabirintoBuilder;
 
 public class LabirintoBuilderTest {
@@ -53,13 +54,13 @@ public class LabirintoBuilderTest {
 
 	@Test
 	public void testAddAdiacenzaSecondaStanzaNull() {
-		lab.addStanzaIniziale("prima").addAdiacenza("prima", null, "ovest");
-		assertNull(lab.getStanzaIniziale().getStanzaAdiacente("ovest"));
+		lab.addStanzaIniziale("prima").addAdiacenza("prima", null, Direzione.ovest);
+		assertNull(lab.getStanzaIniziale().getStanzaAdiacente(Direzione.ovest));
 	}
 	@Test
 	public void testAddAdiacenzaCheImpostaInModoCorretto() {
-		lab.addStanzaIniziale("prima").addStanza("seconda").addAdiacenza("prima", "seconda", "ovest");
-		assertEquals("seconda",lab.getStanzaIniziale().getStanzaAdiacente("ovest").getNome());
+		lab.addStanzaIniziale("prima").addStanza("seconda").addAdiacenza("prima", "seconda", Direzione.ovest);
+		assertEquals("seconda", lab.getStanzaIniziale().getStanzaAdiacente(Direzione.ovest).getNome());
 	}
 
 	@Test
